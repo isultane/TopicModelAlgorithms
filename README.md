@@ -3,8 +3,8 @@ NOTE:
 	This is a research code and is developed incrementally. So, it is not
 	well organized and also some parts are not relevant. For example: the
 	perplexity computation function is incorrect, if you need this then you
-	need to modify the code or contact the authors. Unfortunately, this code
-	is not commented at all. Use it at your own risk.
+	need to modify the code or contact the authors. This code
+	is partially commented. Use it at your own risk.
 
 #Topic Model Algorithms
 The Java package TopicModelAlgorithms is released to provide alternatives for topic models implementaions using Java language. Participation, bug reports, comments and suggestions about TopicModelAlgorithms are highly appreciated.
