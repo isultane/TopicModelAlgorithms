@@ -53,6 +53,7 @@ public class GibbsSamplingSLDA
 														// given a word
 	public HashMap<Integer, String> id2WordVocabulary; // Vocabulary to get word
 														// given an ID
+	public TreeMap<String,Integer> wordCnt;
 	public int vocabularySize; // The number of word types in the corpus
 
 	// numDocuments * numTopics matrix
@@ -139,6 +140,8 @@ public class GibbsSamplingSLDA
 
 		word2IdVocabulary = new HashMap<String, Integer>();
 		id2WordVocabulary = new HashMap<Integer, String>();
+			// Sultan added
+			wordCnt = new TreeMap<String,Integer>();
 		corpus = new ArrayList<List<List<Integer>>>();
 		numDocuments = 0;
 		numSentences = 0;
@@ -313,7 +316,7 @@ public class GibbsSamplingSLDA
 							m0++;
 						}
 					}
-					multiPros[tIndex] = (docTopicCount[sIndex][tIndex] + alpha) * expectWT;
+					multiPros[tIndex] = (docTopicCount[dIndex][tIndex] + alpha) * expectWT;
 				}
 				topic = FuncUtils.nextDiscrete(multiPros);
 				
@@ -528,6 +531,5 @@ public class GibbsSamplingSLDA
 		GibbsSamplingSLDA slda = new GibbsSamplingSLDA("data/corpus1.txt", 20, 0.1,
 			0.01, 1000, 20, "testSLDA");
 		slda.inference();
-	
 	}
 }
