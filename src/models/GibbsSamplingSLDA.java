@@ -6,7 +6,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,7 +45,7 @@ public class GibbsSamplingSLDA
 	public List<List<List<Integer>>> corpus; // Word ID-based corpus
 	public List<List<Integer>> topicAssignments; // Topics assignments for sentences in the corpus
 	public int numDocuments; // Number of documents in the corpus
-		// Sultan added
+		// Sultan
 		public int numSentences; // Number of sentences in the corpus
 	public int numWordsInCorpus; // Number of words in the corpus
 
@@ -209,7 +211,6 @@ public class GibbsSamplingSLDA
 	
 			initialize();
 	}
-
 	/**
 	 * Randomly initialize topic assignments
 	 */
@@ -225,8 +226,8 @@ public class GibbsSamplingSLDA
 			for (int sIndex=0 ; sIndex<document.size() ; sIndex++) {
 				List<Integer> sentences = document.get(sIndex);
 				int topic = FuncUtils.nextDiscrete(multiPros); // Sample a topic
-				docTopicCount[sIndex][topic] += 1;
-				sumDocTopicCount[sIndex] += 1;
+				docTopicCount[dIndex][topic] += 1;
+				sumDocTopicCount[dIndex] += 1;
 				for(int wIndex=0 ; wIndex<sentences.size() ; wIndex++){
 					topicWordCount[topic][document.get(sIndex).get(wIndex)] += 1;
 					sumTopicWordCount[topic] += 1;
@@ -236,7 +237,6 @@ public class GibbsSamplingSLDA
 			topicAssignments.add(topics);
 		}
 	}
-
 
 	public void inference()
 		throws IOException
@@ -278,25 +278,48 @@ public class GibbsSamplingSLDA
 				List<Integer> sentence = document.get(sIndex);
 				int topic = topicAssignments.get(dIndex).get(sIndex);
 				// Decrease counts
-				docTopicCount[sIndex][topic] -= 1;
-				sumDocTopicCount[sIndex] -= 1;
+				docTopicCount[dIndex][topic] -= 1;
+				sumDocTopicCount[dIndex] -= 1;
 				for(int wIndex=0 ; wIndex<sentence.size() ; wIndex++){
 					topicWordCount[topic][document.get(sIndex).get(wIndex)] -= 1;
 					sumTopicWordCount[topic] -= 1;
 				}
 				// Sample a topic
 				for (int tIndex = 0; tIndex < numTopics; tIndex++) {
+					double beta0 = sumTopicWordCount[tIndex] + betaSum;
+					int m0 = 0;
 					double expectWT = 1;
+					// getting the number of total words (or word w) in sentence i
+					List<String> sentenceStat = new ArrayList<String>();
 					for(int wIndex=0 ; wIndex<sentence.size() ; wIndex++){
-						expectWT *= (topicWordCount[tIndex][document.get(sIndex).get(wIndex)] + beta) / (sumTopicWordCount[tIndex] + betaSum);
+						sentenceStat.add(id2WordVocabulary.get(document.get(sIndex).get(wIndex)));
+					}
+					Map<String, Integer> unique = new HashMap<String, Integer>();
+					for (String s : sentenceStat) {
+						Integer cnt = unique.get(s);
+						if (cnt == null) {
+							unique.put(s, 1);
+						} else {
+							unique.put(s, cnt + 1);
+						}
+					}
+					for (Map.Entry<String, Integer> entry : unique.entrySet()) {
+						String key = entry.getKey();
+						int cnt = entry.getValue();
+						double betaw = topicWordCount[tIndex][word2IdVocabulary
+								.get(key)] + beta;
+						for (int m = 0; m < cnt; m++) {
+							expectWT *= (betaw + m) / (beta0 + m0);
+							m0++;
+						}
 					}
 					multiPros[tIndex] = (docTopicCount[sIndex][tIndex] + alpha) * expectWT;
 				}
 				topic = FuncUtils.nextDiscrete(multiPros);
 				
 				// Increase counts
-				docTopicCount[sIndex][topic] += 1;
-				sumDocTopicCount[sIndex] += 1;
+				docTopicCount[dIndex][topic] += 1;
+				sumDocTopicCount[dIndex] += 1;
 				for(int wIndex=0 ; wIndex<sentence.size() ; wIndex++){
 					topicWordCount[topic][document.get(sIndex).get(wIndex)] += 1;
 					sumTopicWordCount[topic] += 1;
@@ -502,8 +525,9 @@ public class GibbsSamplingSLDA
 	public static void main(String args[])
 		throws Exception
 	{
-		GibbsSamplingSLDA slda = new GibbsSamplingSLDA("data/corpus2.txt", 20, 0.1,
+		GibbsSamplingSLDA slda = new GibbsSamplingSLDA("data/corpus1.txt", 20, 0.1,
 			0.01, 1000, 20, "testSLDA");
 		slda.inference();
+	
 	}
 }
