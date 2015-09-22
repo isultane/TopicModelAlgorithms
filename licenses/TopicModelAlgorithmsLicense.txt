@@ -1,0 +1,4 @@
+	Copyright (C) 2015 by Sultan Saud Alqahtani 
+	s_alqaht@encs.concordia.ca
+	Department of computer science and software engineering,
+	Concordia University, Canada
