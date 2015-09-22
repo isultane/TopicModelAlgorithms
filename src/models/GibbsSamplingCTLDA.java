@@ -49,13 +49,13 @@ public class GibbsSamplingCTLDA
 														// given an ID
 	public int vocabularySize; // The number of word types in the corpus
 
-	// numDocuments * numTopics matrix
-	// Given a document: number of its words assigned to each topic
+	// numDocuments * (numTopics + numConcepts) matrix
+	// Given a document: number of its words assigned to each topic or concept
 	public int[][] docConceptTopicCount;
 	// Number of words in every document
 	public int[] sumDocConceptTopicCount;
 		// Sultan added
-	    // numDocuments * numTopics matrix
+	    // numDocuments * numConcepts matrix
 		// Given a document: number of its words assigned to each concept
 		public int[][] docConceptCount;
 		// Number of words in every document
