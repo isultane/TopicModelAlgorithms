@@ -17,7 +17,16 @@ import java.util.TreeSet;
 import util.FuncUtils;
 
 /**
- * TO BE COMPLETED ...
+ * CTLDA: A Java code for the CTLDA topic model
+ * 
+ * Implementation of the concept-topic LDA model, a probabilistic 
+ * modeling framework that combines both human-defined concepts
+ * and data-driven topics in a principled manner as described in:
+ * 
+ * Chemudugunta, C., Holloway, A., Smyth, P., & Steyvers, M. (2008). 
+ * Modeling documents by combining semantic concepts with unsupervised 
+ * statistical learning (pp. 229-244). Springer Berlin Heidelberg.
+ * 
  * @author Sultan Alqahtani
  *
  */
@@ -360,28 +369,42 @@ public class GibbsSamplingCTLDA
 		}
 	}
 
-//	public double computePerplexity() {
-//		double logliCorpus = 0.0;
-//		for (int dIndex = 0; dIndex < numDocuments; dIndex++) {
-//			int docSize = corpus.get(dIndex).size();
-//			double logliDoc = 0.0;
-//			for (int wIndex = 0; wIndex < docSize; wIndex++) {
-//				int word = corpus.get(dIndex).get(wIndex);
-//				double likeWord = 0.0;
-//				for (int tIndex = 0; tIndex < numTopics; tIndex++) {
-//					likeWord += ((docTopicCountLDA[dIndex][tIndex] + alpha) / (sumDocTopicCountLDA[dIndex] + alphaSum))
-//							* ((topicWordCountLDA[tIndex][word] + beta) / (sumTopicWordCountLDA[tIndex] + betaSum));
-//				}
-//				logliDoc += Math.log(likeWord);
-//			}
-//			logliCorpus += logliDoc;
-//		}
-//		double perplexity = Math.exp(-1.0 * logliCorpus / numWordsInCorpus);
-//		if (perplexity < 0)
-//			throw new RuntimeException("Illegal perplexity value: "
-//					+ perplexity);
-//		return perplexity;
-//	}
+	/**
+	 * still has problem of calculation 
+	 * @return
+	 */
+	public double computePerplexity() {
+		double logliCorpus = 0.0;
+		for (int dIndex = 0; dIndex < numDocuments; dIndex++) {
+			int docSize = corpus.get(dIndex).size();
+			double logliDoc = 0.0;
+			for (int wIndex = 0; wIndex < docSize; wIndex++) {
+				int word = corpus.get(dIndex).get(wIndex);
+				double likeWord = 0.0;
+				for (int tIndex = 0; tIndex < numTopics; tIndex++) {
+					likeWord += ((docConceptTopicCount[dIndex][tIndex] + alpha) / (sumDocConceptTopicCount[dIndex] + alphaSum))
+							* ((topicWordCount[tIndex][word] + beta) / (sumTopicWordCount[tIndex] + betaSum));
+				}
+
+				for (int cIndex = 0; cIndex < numConcepts; cIndex++) {
+					if (conceptWordsList.get(cIndex).contains(
+							id2WordVocabulary.get(word))) {
+						likeWord += ((docConceptTopicCount[dIndex][cIndex] + alpha) / (sumDocConceptTopicCount[dIndex] + alphaSum))
+								* ((conceptWordCount[cIndex][word] + beta) / (sumConceptWordCount[cIndex] + (beta * conceptWordsList
+										.get(cIndex).size())));
+					}
+				}
+
+				logliDoc += Math.log(likeWord);
+			}
+			logliCorpus += logliDoc;
+		}
+		double perplexity = Math.exp(-1.0 * logliCorpus / numWordsInCorpus);
+		if (perplexity < 0)
+			throw new RuntimeException("Illegal perplexity value: "
+					+ perplexity);
+		return perplexity;
+	}
 
 	public void writeParameters()
 		throws IOException
@@ -576,7 +599,7 @@ public class GibbsSamplingCTLDA
 		String pathToCorpus = "data/corpus1.txt";
 		double beta  = 0.01;
 		double alpha = 0.1;
-		int iteration = 2000;
+		int iteration = 1000;
 		int topWords = 100;
 		int numConcepts = 3;
 		int numTopics = 20;
