@@ -1,6 +1,15 @@
 package models;
 /**
- * UNDER PROCESS & MAINTENANCE
+ * GLDA: A Java code for the Guided-LDA topic model
+ * 
+ * like in LDA, each document is assumed to be a mixture over topics
+ * but each topic is a convex combination of a seed topic and a traditional
+ * LDA style topic. GLDA guide the model to learn a desired topic by providing
+ * seed words in each topic, as described in:
+ * 
+ * Jagarlamudi, Jagadeesh, Raghavendra Udupa, and Hal Daumé III. 
+ * "Incorporating Prior Lexical Information in Topic Models.".
+ * 
  * @author Sultan Alqahtani
  */
 public class GibbsSamplingGLDA {
