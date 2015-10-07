@@ -16,7 +16,7 @@ One of the popular topic models has recently emerged as the method of choice for
 ###Sentence Latent Dirichlet Allocation (SLDA) 
 SLDA [2] is a probabilistic generative model that assumes all words in a single sentence are generated from one aspect (topic). This is the basic difference from the general LDA model [1], which is based on each word in the document generated from one topic.
  
-###Guided Latent Dirichlet Allocation (GLDA) 
+###Guided and Seeded Latent Dirichlet Allocation (GLDA and SeededLDA) 
 It is like in LDA [1], each document is assumed to be a mixture over topics but each topic is a convex combination of a seed topic and a traditional LDA style topic. GLDA [3] guide the model to learn a desired topic by providing seed words in each topic. 
 
 ###Special Words topic model (SW) 
