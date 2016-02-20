@@ -10,6 +10,7 @@ NOTE:
 #A consolidated collection of topic model implementations
 The Java package TopicModelAlgorithms is to provide alternatives for topic models implementaions using Java language. Participation, bug reports, comments and suggestions about TopicModelAlgorithms are highly appreciated. For more information on how to participate contact to_sultan@yahoo.com
 
+
 ###Latent Dirichlet Allocation (LDA)
 One of the popular topic models has recently emerged as the method of choice for working with large collections of text documents. LDA [1] is generative model based on the assumption of finding the best latent (random) variables that can be explain the observed data (i.e. words in documents)
  
